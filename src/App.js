@@ -1,13 +1,7 @@
 import { Counter } from "./features/counter/Counter";
 import "./App.css";
-import { ProductList } from "./features/product/components/ProductList";
 import Home from "./Pages/Home";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Route,
-  Link,
-} from "react-router-dom";
+import {createBrowserRouter, RouterProvider,} from "react-router-dom";
 import LoginPage from "./Pages/LoginPage";
 import SignUpPage from "./Pages/SignUpPage";
 import Cartpage from "./Pages/CartPage";
@@ -18,6 +12,13 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLoggedInUser } from "./features/auth/authSlice";
 import { fetchItemsByUserIdAsync } from "./features/cart/cartSlice";
+import PageNotFound from './Pages/404';
+import OrderSuccessPage from './Pages/OrderSuccessPage';
+import UserOrdersPage from './Pages/UserOrdersPage';
+import UserProfilePage from './Pages/UserProfilePage';
+import { fetchLoggedInUserAsync } from './features/user/userSlice';
+import Logout from './features/auth/components/Logout';
+import ForgotPasswordPage from './Pages/ForgotPasswordPage';
 
 const router = createBrowserRouter([
   {
@@ -60,6 +61,38 @@ const router = createBrowserRouter([
       </Protected>
     ),
   },
+  {
+    path: '/order-success/:id',
+    element: (
+      <OrderSuccessPage></OrderSuccessPage>
+    ),
+  },
+  {
+    path: '/orders',
+    element: (
+      <UserOrdersPage></UserOrdersPage>
+      ),
+  },
+  {
+    path: '/profile',
+    element: (
+      <UserProfilePage></UserProfilePage>
+    ),
+  },
+  {
+    path: '/logout',
+    element: <Logout></Logout>,
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPasswordPage></ForgotPasswordPage>,
+  },
+  {
+    path: '*',
+    element: (
+      <PageNotFound></PageNotFound>
+    ),
+  },
 ]);
 
 function App() {
@@ -69,6 +102,7 @@ function App() {
   useEffect(()=>{
     if(user){
       dispatch(fetchItemsByUserIdAsync(user.id))
+      dispatch(fetchLoggedInUserAsync(user.id))
     }
   },[dispatch, user])
   return (
